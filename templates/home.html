@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ওই ভাই! ভাড়া দেন</title>
+    <meta name="description" content="আপনি কি একজন বাড়ি ওয়ালা? আপনি ও কি ডিএনসিসি এর নতুন নিয়ম এর চক্কর এ পড়ে এখন লাইব্রেরিতে হুদাই 50 টাকা দিয়ে রিসিট বানাচ্ছেন? আসেন আপনার একশ 50 টাকার খরচ ৫ টাকায় নামিয়ে দেই। ">
+    <!-- Flask Stuffs, you know -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/home.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/mfak.min.css')}}">
+    <script src="{{url_for('static', filename='js/tailwind.cdn.js')}}"></script>
+    <script src="{{url_for('static', filename='js/navbar.js')}}" defer></script>
+
+    <!--Favicon and Icon Stuffs-->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}" />
+    
+    <script defer>
+        tailwind.config = {
+            darkMode: 'class',
+        };
+    </script>
+    <!--When Im too tired to py build.py all the time-->
+    <!-- Uncomment if developing front-end 
+    <script src="../static/js/tailwind.cdn.js"></script>
+    <script src="../static/js/navbar.js" defer></script>
+    <link rel="stylesheet" href="../static/css/mfak.min.css">
+    <link rel="stylesheet" href="../static/css/home.css"> -->
+
+</head>
+<body class="bg-gray-200 dark:bg-black text-gray-800 dark:text-white">
+    <!-- Navbar -->
+    <nav id="navbar"
+        class="sticky top-0 w-[calc(100%-20px)] z-50 transition-navbar bg-transparent dark:bg-transparent m-[10px]">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between shadow-md rounded-xl bg-gray-200 shadow-md text-black dark:bg-black dark:text-white dark:border dark:border-gray-700"
+            id="navfloat">
+
+            <!-- Left: Brand -->
+            <div class="text-2xl font-bold dark:text-white glow-text"><span class="text-bangla">ভাড়া দেন</span></div>
+
+            <!-- Center: Desktop Nav Links -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 hidden md:flex space-x-8">
+                <a href="../"
+                    class="relative text-current no-underline after:content-[''] after:absolute after:left-0 after:-bottom-[5px] after:w-0 after:h-[2px] after:bg-[#ff5733] after:transition-all after:duration-1000 hover:after:w-full">Home</a>
+                <a href="../bangla"
+                    class="relative text-current no-underline after:content-[''] after:absolute after:left-0 after:-bottom-[5px] after:w-0 after:h-[2px] after:bg-[#ff5733] after:transition-all after:duration-1000 hover:after:w-full">বাংলায় রিসিট করুন</a>
+                <a href="../thank-you"
+                    class="relative text-current no-underline after:content-[''] after:absolute after:left-0 after:-bottom-[5px] after:w-0 after:h-[2px] after:bg-[#ff5733] after:transition-all after:duration-1000 hover:after:w-full">Attribution</a>
+                <a href="https://github.com/w3nabil/bharaden/"
+                    class="relative text-current no-underline after:content-[''] after:absolute after:left-0 after:-bottom-[5px] after:w-0 after:h-[2px] after:bg-[#ff5733] after:transition-all after:duration-1000 hover:after:w-full"
+                    rel="noopener noreferrer">Source Code</a>
+            </div>
+
+            <!-- Right (Desktop): Theme Toggle -->
+            <div class="hidden md:flex">
+                <button id="theme-toggle"
+                    class="ml-2 p-1 rounded-full transition flex items-center justify-center w-20 h-10 relative overflow-hidden shadow-md bg-gradient-to-r from-yellow-200 to-yellow-400 dark:from-gray-800 dark:to-gray-900">
+                    <img id="sun-icon" src="../static/img/sun.webp" alt="Sun"
+                        class="w-6 h-6 absolute left-2 top-1/2 transform -translate-y-1/2 transition-opacity duration-500 dark:opacity-0" />
+                    <img id="moon-icon" src="../static/img/moon.webp" alt="Moon"
+                        class="w-6 h-6 absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 transition-opacity duration-500 dark:opacity-100" />
+                </button>
+            </div>
+
+            <!-- Mobile: Theme Toggle + Burger -->
+            <div class="flex items-center gap-3 md:hidden">
+                <button id="theme-toggle-mobile"
+                    class="p-2 rounded-full bg-white dark:bg-gray-800 shadow-md transition hover:scale-105">
+                    <img id="theme-icon-mobile" src="../src/img/sun.webp" alt="Toggle Theme" class="w-6 h-6" />
+                </button>
+                <button id="menu-toggle" class="text-current focus:outline-none transition-colors">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu"
+            class="md:hidden max-h-0 overflow-hidden transition-all duration-300 ease-in-out bg-gray-200 dark:bg-black text-black dark:bg-gray-900 px-4 text-center rounded-xl shadow-md">
+            <a href="../" class="block py-2 transition-opacity duration-500 animate-fadeIn dark:text-white">Home</a>
+            <a href="../bangla"
+                class="block py-2 transition-opacity duration-500 animate-fadeIn delay-50 dark:text-white">বাংলায় রিসিট করুন</a>
+            <a href="../thank-you"
+                class="block py-2 transition-opacity duration-500 animate-fadeIn delay-100 dark:text-white">Attribution</a>
+            <a href="https://github.com/w3nabil/bharaden/"
+                class="block py-2 transition-opacity duration-500 animate-fadeIn delay-200 dark:text-white" rel="noopener noreferrer">Source Code</a>
+        </div>
+    </nav>
+    <section class="w-full max-w-5xl mx-auto p-6 bg-white dark:bg-transparent rounded-xl shadow-md">
+        <h1 class="text-2xl font-semibold mb-6 text-zinc-900 dark:text-zinc-100">
+            Make a Receipt
+        </h1>
+        <p class="max-w-5xl"><span class="text-red-900">**</span>If the Total is zero, the following item will automatically be excluded from the pdf</p>
+        <p class="max-w-5xl"><span class="text-red-700">**</span>Our Services are free of charges, you DO NOT need any CASH to make a receipt.</p>
+        <form method="POST" class="space-y-8">
+            <div class="owner_information">
+                <!-- Owner Information --> 
+                <h2 class="mb-3 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+                    Owner / Landlord / Lessor Information
+                </h2>
+            
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <div class="space-y-1">
+                        <label for="owner_name" class="block text-xs font-medium text-zinc-400">
+                            Owner Name
+                        </label>
+                    
+                        <input type="text" id="owner_name" name="owner_name" aria-required="true" class="w-full bg-transparent text-zinc-100
+                                   border-0 border-b border-zinc-600
+                                   focus:border-blue-500 focus:outline-none
+                                   py-2 text-sm
+                                   transition-colors" />
+                    </div>
+
+                    <div class="space-y-1">
+                        <label for="owner_address" class="block text-xs font-medium text-zinc-400">
+                            Owner Address
+                        </label>
+                    
+                        <input type="text" id="owner_address" name="owner_address" aria-required="true" class="w-full bg-transparent text-zinc-100
+                                   border-0 border-b border-zinc-600
+                                   focus:border-blue-500 focus:outline-none
+                                   py-2 text-sm
+                                   transition-colors" />
+                    </div>
+
+                    <div class="space-y-1">
+                        <label for="owner_phone" class="block text-xs font-medium text-zinc-400">
+                            Owner Phone
+                        </label>
+                    
+                        <input type="text" id="owner_phone" name="owner_phone" aria-required="true" class="w-full bg-transparent text-zinc-100
+                                   border-0 border-b border-zinc-600
+                                   focus:border-blue-500 focus:outline-none
+                                   py-2 text-sm
+                                   transition-colors" />
+                    </div>
+
+                    <div class="space-y-1">
+                        <label for="owner_email" class="block text-xs font-medium text-zinc-400">
+                            Owner Email
+                        </label>
+                    
+                        <input type="text" id="owner_email" name="owner_email" aria-required="true" class="w-full bg-transparent text-zinc-100
+                                   border-0 border-b border-zinc-600
+                                   focus:border-blue-500 focus:outline-none
+                                   py-2 text-sm
+                                   transition-colors" />
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Renter Information -->
+            <div class="tenant_information">
+                <h2 class="mb-3 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+                    Tenant / Lessee / Renter Information
+                </h2>
+    
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    
+    
+                    <div class="space-y-1">
+                        <label for="tenant_name" class="block text-xs font-medium text-zinc-400">
+                            Tenant Name
+                        </label>
+                    
+                        <input type="text" id="tenant_name" name="tenant_name" aria-required="true" class="w-full bg-transparent text-zinc-100
+                                   border-0 border-b border-zinc-600
+                                   focus:border-blue-500 focus:outline-none
+                                   py-2 text-sm
+                                   transition-colors" />
+                    </div>
+
+                    <div class="space-y-1">
+                        <label for="tenant_address" class="block text-xs font-medium text-zinc-400">
+                            Tenant Address
+                        </label>
+                    
+                        <input type="text" id="tenant_address" name="tenant_address" aria-required="true" class="w-full bg-transparent text-zinc-100
+                                   border-0 border-b border-zinc-600
+                                                       focus:border-blue-500 focus:outline-none
+                                                       py-2 text-sm
+                                                       transition-colors" />
+                    </div>
+                    
+    
+                    <div class="space-y-1">
+                        <label for="tenant_phone" class="block text-xs font-medium text-zinc-400">
+                            Tenant Phone
+                        </label>
+                    
+                        <input type="text" id="tenant_phone" name="tenant_phone" aria-required="true" class="w-full bg-transparent text-zinc-100
+                                   border-0 border-b border-zinc-600
+                                   focus:border-blue-500 focus:outline-none
+                                   py-2 text-sm
+                                   transition-colors" />
+                    </div>
+                    <div class="space-y-1">
+                        <label for="tenant_email" class="block text-xs font-medium text-zinc-400">
+                            Tenant Email
+                        </label>
+                    
+                        <input type="text" id="tenant_email" name="tenant_email" aria-required="true" class="w-full bg-transparent text-zinc-100
+                                   border-0 border-b border-zinc-600
+                                   focus:border-blue-500 focus:outline-none
+                                   py-2 text-sm
+                                   transition-colors" />    
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Here Comes the money! money, money money!!! -->
+            <div class="rent_charges">
+                <h2 class="mb-3 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+                    For the Rent of the Following Rented Items
+                </h2>
+    
+                <div class="grid grid-cols-2 gap-2">
+                    <input readonly placeholder="Flat Number and/or Floor" class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                     bg-zinc-100 dark:bg-zinc-900 text-center text-sm font-medium
+                     text-zinc-600 dark:text-zinc-100 cursor-not-allowed" />
+                    <input readonly placeholder="TOTAL"
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-center text-sm font-medium text-zinc-600 dark:text-zinc-100 cursor-not-allowed" />
+                </div>
+    
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <input type="text" id="rent_1" name="rent_1" required placeholder="e.g. Flat 2A"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    
+                    <input type="number" id="rent_total_1" name="rent_total_1" value="0" required
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+            </div>
+            <button type="button" onclick="addanother_service()" class="addanother_service px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                                                                           text-zinc-700 dark:text-zinc-200
+                                                                           hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+                + Add Another Rented Item
+            </button>
+            <div class="utility_charges">
+                <h2 class="mb-3 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+                    For the Unit Based Utility Bills 
+                </h2>
+            
+                <div class="grid grid-cols-4 gap-2">
+                    <input readonly placeholder="Utility" class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                                 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium
+                                 text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+            
+                    <input readonly placeholder="Used Unit"
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+            
+                    <input readonly placeholder="Per Unit Price"
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+            
+                    <input readonly placeholder="TOTAL"
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+                </div>
+            
+                <div class="grid grid-cols-4 gap-2 mt-2">
+                    <input type="text" id="utility_1" name="utility_1" placeholder="Electricity" readonly aria-readonly="true" value="Electricity"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="utility_unit_1" name="utility_unit_1" value="0" 
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+                    <input type="number" id="utility_price_1" name="utility_price_1" value="8"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="utility_total_1" name="utility_total_1" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <div class="grid grid-cols-4 gap-2 mt-2">
+                    <input type="text" id="utility_2" name="utility_2" placeholder="Gas" readonly aria-readonly="true"
+                        value="Gas"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                
+                    <input type="number" id="utility_unit_2" name="utility_unit_2" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                
+                    <input type="number" id="utility_price_2" name="utility_price_2" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                
+                    <input type="number" id="utility_total_2" name="utility_total_2" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+            </div>
+
+            <div class="fixedutility_charges">
+                <h2 class="mb-3 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+                    For the Fixed Rate Utility Bills
+                </h2>
+            
+                <div class="grid grid-cols-4 gap-2">
+                    <input readonly placeholder="Utility" class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                                             bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium
+                                             text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+            
+                    <input readonly placeholder="Number of Services/Connections"
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+            
+                    <input readonly placeholder="Amount per Service/Connection"
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+            
+                    <input readonly placeholder="TOTAL"
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+                </div>
+            
+                <div class="grid grid-cols-4 gap-2 mt-2">
+                    <input type="text" id="fixedutility_1" name="fixedutility_1" placeholder="Water" readonly aria-readonly="true"
+                        value="Water"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_ns_1" name="fixedutility_ns_1" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_price_1" name="fixedutility_price_1" value="8.00"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_total_1" name="fixedutility_total_1" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+            
+                <div class="grid grid-cols-4 gap-2 mt-2">
+                    <input type="text" id="fixedutility_2" name="fixedutility_2" placeholder="Gas" readonly aria-readonly="true" value="Gas"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_ns_2" name="fixedutility_ns_2" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_price_2" name="fixedutility_price_2" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_total_2" name="fixedutility_total_2" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+            
+                <div class="grid grid-cols-4 gap-2 mt-2">
+                    <input type="text" id="fixedutility_3" name="fixedutility_3" placeholder="Internet" readonly aria-readonly="true"
+                        value="Internet"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_ns_3" name="fixedutility_ns_3" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_price_3" name="fixedutility_price_3" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_total_3" name="fixedutility_total_3" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+            
+                <div class="grid grid-cols-4 gap-2 mt-2">
+                    <input type="text" id="fixedutility_4" name="fixedutility_4" placeholder="DTH" readonly aria-readonly="true"
+                        value="DTH"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_ns_4" name="fixedutility_ns_4" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_price_4" name="fixedutility_price_4" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="fixedutility_total_4" name="fixedutility_total_4" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+            </div>
+
+            <div class="relative">
+                <button type="button" onclick="addanother_unitutility()"
+                    class="addanother_utility px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                                                                                       text-zinc-700 dark:text-zinc-200
+                                                                                       hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+                    + Add Another Unit based Utility
+                </button>
+
+                <button type="button" onclick="addanother_fixedutility()"
+                    class="addanother_utility px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                                                                                                       text-zinc-700 dark:text-zinc-200
+                                                                                                       hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+                    + Add Another Fixed rate Utility
+                </button>
+            </div>
+
+
+            <div class="additional_charges">
+                <h2 class="mb-3 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+                    For the Additional Services/Charges
+                </h2>
+            
+                <div class="grid grid-cols-2 gap-2">
+                    <input readonly placeholder="Flat Number and/or Floor" class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                                 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium
+                                 text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+                    <input readonly placeholder="TOTAL"
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+                </div>
+            
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <input type="text" id="additional_1" name="additional_1" placeholder="e.g. Lift Maintenance, WatchMan Fees, etc."
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+                    <input type="number" id="additional_total_1" name="additional_total_1" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+            </div>
+
+            <button type="button" onclick="addanother_service()" class="addanother_service px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                                                               text-zinc-700 dark:text-zinc-200
+                                                               hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+                    + Add Another Services/Charges
+            </button>
+
+            <div class="misc">
+                <h2 class="mb-3 text-lg font-medium text-zinc-800 dark:text-zinc-200">
+                    Misc
+                </h2>
+            
+                <div class="grid grid-cols-4 gap-2">
+                    <input readonly placeholder="Total Amount" class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                                             bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium
+                                             text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+                    <input readonly placeholder="Paid Amount"
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+                    <input readonly placeholder="Due Amount"
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+                    <input placeholder="Deduction Amount (if any)" readonly
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+                </div>
+            
+                <div class="grid grid-cols-4 gap-2 mt-2">
+                    <input type="text" id="all_today" name="all_today" readonly 
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            
+                    <input type="number" id="paid_today" name="paid_today" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    
+                    <input type="number" id="due_today" name="due_today" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    
+                    <input type="number" id="deduction_today" name="deduction_today" value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <div class="flex items-center gap-2 py-4">
+                    <label for="deduction_reason" class="text-sm text-zinc-400 whitespace-nowrap">
+                        Reason for Deduction :
+                    </label>
+                
+                    <input type="text" id="deduction_reason" name="deduction_reason" class="flex-1 bg-transparent text-gray-800 dark:text-zinc-100 text-sm
+                               border-0 border-b border-zinc-600
+                               focus:border-blue-500 focus:outline-none
+                               py-1
+                               transition-colors" />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="flex items-center gap-2 py-4">
+                        <label class="text-sm text-zinc-400 whitespace-nowrap">
+                            Currency :
+                        </label>
+                
+                        <select id="currency" name="currency" class="flex-1 bg-transparent text-gray-800 dark:text-zinc-100 text-sm
+                                               border-0 border-b border-zinc-600
+                                               focus:border-blue-500 focus:outline-none
+                                               py-1
+                                               appearance-none
+                                               transition-colors">
+                            <option class="bg-zinc-900 text-zinc-100" value="BDT">BDT — ৳ Taka</option>
+                            <option class="bg-zinc-900 text-zinc-100" value="USD">USD — $ Dollar</option>
+                            <option class="bg-zinc-900 text-zinc-100" value="EUR">EUR — € Euro</option>
+                            <option class="bg-zinc-900 text-zinc-100" value="GBP">GBP — £ Pound</option>
+                            <option class="bg-zinc-900 text-zinc-100" value="CNY">CNY — ¥ Yuan</option>
+                            <option class="bg-zinc-900 text-zinc-100" value="JPY">JPY — ¥ Yen</option>
+                            <option class="bg-zinc-900 text-zinc-100" value="PHP">PHP — ₱ Philippine Peso</option>
+                        </select>
+                    </div>
+                
+                    <style>
+                        input[type="date"]::-webkit-calendar-picker-indicator {
+                            opacity: 0;
+                            display: block;
+                            position: absolute;
+                            right: 0;
+                            width: 2rem;
+                            height: 100%;
+                            cursor: pointer;
+                        }
+                    </style>
+                
+                    <div class="flex items-center gap-2 py-4 relative">
+                        <label class="text-sm text-zinc-400 whitespace-nowrap">
+                            Billing Period (From) :
+                        </label>
+                
+                        <input type="date" id="period_from" name="period_from" class="flex-1 bg-transparent text-gray-800 dark:text-zinc-100 text-sm
+                                               border-0 border-b border-zinc-600
+                                               focus:border-blue-500 focus:outline-none
+                                               py-1 pr-8
+                                               appearance-none
+                                               transition-colors" />
+                
+                        <span class="pointer-events-none absolute right-5 top-5 text-zinc-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </span>
+                    </div>
+                
+                    <div class="flex items-center gap-2 py-4 relative">
+                        <label class="text-sm text-zinc-400 whitespace-nowrap">
+                            Billing Period (To) :
+                        </label>
+                
+                        <input type="date" id="period_to" name="period_to" class="flex-1 bg-transparent text-gray-800 dark:text-zinc-100 text-sm
+                                               border-0 border-b border-zinc-600
+                                               focus:border-blue-500 focus:outline-none
+                                               py-1 pr-8
+                                               appearance-none
+                                               transition-colors" />
+                
+                        <span class="pointer-events-none absolute right-5 top-5 text-zinc-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Actions -->
+            <div class="flex flex-wrap center justify-center md:justify-end gap-4 mt-6">
+                <button type="submit" class="px-6 py-2 rounded-lg bg-blue-600 text-white
+                               hover:bg-blue-700 transition">
+                    Make PDF Receipt
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <footer class="mb-6 border-t border-gray-300 dark:border-gray-700 mt-6">
+        <div class="max-w-7xl mx-auto px-4 py-2 text-center text-sm text-gray-600 dark:text-gray-400">
+            This site is run without any server-side storage or database. No personal data is stored. All calculations are done in your browser. All data is erased when you clear the site cache. If you are thinking I am storing your data, dude, I can not even afford my education expenses let alone storing your data which has zero value.
+        </div>
+        <div class="max-w-7xl mx-auto px-4 py-2 text-center text-sm text-gray-600 dark:text-gray-400">
+            Made with ❤️ by <a href="https://w3nabil.com/" class="text-blue-600 hover:underline">@w3nabil</a> in Dacca.
+        </div>
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center text-sm text-gray-600 dark:text-gray-400">
+            &copy; 2026 ভাড়া দেন. All rights reserved.
+        </div>
+    </footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector("form");
+
+        function clearZero(e) {
+            if (e.target.type === "number" && e.target.value === "0") {
+                e.target.value = "";
+            }
+        }
+
+        function restoreZero(e) {
+            if (e.target.type === "number" && e.target.value === "") {
+                e.target.value = "0";
+            }
+        }
+
+        form.addEventListener("focusin", clearZero);
+        form.addEventListener("focusout", restoreZero);
+
+        form.addEventListener("input", (e) => {
+            if (e.target.id.startsWith("rent_total_")) {
+                // direct value, no calc needed (future-proof hook)
+            }
+        });
+
+        form.addEventListener("input", (e) => {
+            if (
+                e.target.id.startsWith("utility_unit_") ||
+                e.target.id.startsWith("utility_price_")
+            ) {
+                const index = e.target.id.match(/\d+$/)[0];
+
+                const unit = parseFloat(
+                    document.getElementById(`utility_unit_${index}`)?.value
+                ) || 0;
+
+                const price = parseFloat(
+                    document.getElementById(`utility_price_${index}`)?.value
+                ) || 0;
+
+                const totalInput = document.getElementById(`utility_total_${index}`);
+                if (totalInput) {
+                    totalInput.value = (unit * price).toFixed(2);
+                }
+            }
+
+            if (
+                e.target.id.startsWith("fixedutility_ns_") ||
+                e.target.id.startsWith("fixedutility_price_")
+            ) {
+                const index = e.target.id.match(/\d+$/)[0];
+
+                const unit = parseFloat(
+                    document.getElementById(`fixedutility_ns_${index}`)?.value
+                ) || 0;
+
+                const price = parseFloat(
+                    document.getElementById(`fixedutility_price_${index}`)?.value
+                ) || 0;
+
+                const totalInput = document.getElementById(`fixedutility_total_${index}`);
+                if (totalInput) {
+                    totalInput.value = (unit * price).toFixed(2);
+                }
+            }
+        });
+
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector("form");
+        const STORAGE_KEY = "receipt_draft";
+
+        function saveForm() {
+            const data = {};
+            form.querySelectorAll("input, select, textarea").forEach(el => {
+                if (el.name) {
+                    data[el.name] = el.value;
+                }
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function restoreForm() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) return;
+
+            const data = JSON.parse(saved);
+            Object.keys(data).forEach(name => {
+                const field = form.querySelector(`[name="${name}"]`);
+                if (field) {
+                    field.value = data[name];
+                    field.dispatchEvent(new Event("input", { bubbles: true }));
+                }
+            });
+        }
+
+        form.addEventListener("submit", () => {
+            localStorage.removeItem(STORAGE_KEY);
+        });
+
+        form.addEventListener("input", saveForm);
+        form.addEventListener("change", saveForm);
+
+        restoreForm();
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const fromInput = document.getElementById("period_from");
+        const toInput = document.getElementById("period_to");
+
+        if (fromInput && toInput && !fromInput.value && !toInput.value) {
+            const now = new Date();
+
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+            fromInput.value = formatDateLocal(firstDay);
+            toInput.value = formatDateLocal(lastDay);
+        }
+    });
+
+    function formatDateLocal(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
+</script>
+</body>
+</html>

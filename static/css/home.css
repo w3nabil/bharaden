@@ -1,0 +1,8 @@
+@font-face {
+    font-family: bangla;
+    src: url('../font/Shadhinata/Unicode/unicode_normal.ttf') format('ttf');
+}
+
+.text-bangla {
+    font-family: bangla, -apple-system, system-ui;
+}

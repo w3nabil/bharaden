@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: 14px;
+            color: #111;
+        }
+
+        h2 {
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        th,
+        td {
+            border: 1px solid #333;
+            padding: 4px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h3 style="text-align: center;">Billing Statement</h3>
+    <hr>
+    <p>
+        To whom it may concern,<br><br>
+        This statement records the monthly charges for {{tenant_name}}, residing at {{tenant_address}}
+        (Email: {{tenant_email}}
+        | Phone: {{tenant_phone}}), payable to {{owner_name}}
+        for the billing period {{period_from}} – {{period_to}}, in accordance with the rental arrangement.
+    </p>
+    <div class="rent-unituti" style="display: flex; gap: 2rem; width: 100%;">
+        {% if rents%}
+        <div class="rent-div" style="width: 100%;">
+            <h4>Rents</h4>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Total</th>
+                </tr>
+                {% for r in rents %}
+                <tr>
+                    <td>{{ r.name }}</td>
+                    <td>{{ r.total }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+        
+        {% if utilities%}
+        <div class="unitutil-div" style="width: 100%;">
+            <h4>Unit Based Utilities</h4>
+            <table>
+                <tr>
+                    <th>Utility</th>
+                    <th>Total</th>
+                </tr>
+                {% for u in utilities %}
+                <tr>
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.total }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+        
+    </div>
+
+    <div class="fixedutil-addi" style="display: flex; gap: 2rem; width: 100%;">
+        {% if fixed_utilities%}
+        <div class="fixedutil-div" style="width: 100%;">
+            <h4>Fixed Utilities</h4>
+            <table>
+                <tr>
+                    <th>Utility</th>
+                    <th>Total</th>
+                </tr>
+                {% for f in fixed_utilities %}
+                <tr>
+                    <td>{{ f.name }}</td>
+                    <td>{{ f.total }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+        
+        {% if additionals%}
+        <div class="addi-div" style="width: 100%;">
+        
+            <h4>Additional Services</h4>
+            <table>
+                <tr>
+                    <th>Service</th>
+                    <th>Total</th>
+                </tr>
+                {% for a in additionals %}
+                <tr>
+                    <td>{{ a.name }}</td>
+                    <td>{{ a.total }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
+    <h4>Summary (in {{currency}})</h4>
+    <table style="width: 100%;">
+        <thead>
+            <td>Payable</td>
+            <td>Deduction <br> ({{ deduction_reason }})</td>
+            <td>Paid</td>
+            <td>Due</td>
+        </thead>
+        <tr>
+            <td>{{all_today || " "}}</td>
+            <td>{{deduction_today || " "}}</td>
+            <td>{{paid_today || " " }}</td>
+            <td>{{due_today || " "}}</td>
+        </tr>
+    </table>
+
+    <p> This statement confirms the charges and payment status for the stated period.
+    Issued for record and reference purposes.</p>
+
+    <style>
+        .sigowner-div table,
+        .sigtenant-div table {
+            border-collapse: collapse;
+            border: none;
+        }
+
+        .sigowner-div th,
+        .sigowner-div td,
+        .sigtenant-div th,
+        .sigtenant-div td {
+            border: none;
+        }
+
+    </style>
+    <div class="sigowner-div" style="width: 30%;">
+        <table>
+            <tr>
+                <td style="text-align: left;"><br><br><br>{{owner_name}}</td>
+            </tr>
+            <tr>
+                <td style="text-align: left;">{{owner_address}}</td>
+            </tr>
+            <tr>
+                <td style="text-align: left;">{{owner_phone}}</td>
+            </tr>
+            <tr>
+                <td style="text-align: left;">{{owner_email}}</td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>
