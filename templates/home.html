@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{{url_for('static', filename='css/mfak.min.css')}}">
     <script src="{{url_for('static', filename='js/tailwind.cdn.js')}}"></script>
     <script src="{{url_for('static', filename='js/navbar.js')}}" defer></script>
+    <script src="{{url_for('static', filename='js/index.js')}}" defer></script>
+    <script src="{{url_for('static', filename='js/index.helper.js')}}" defer></script>
 
     <!--Favicon and Icon Stuffs-->
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon" />
@@ -25,7 +27,9 @@
     <script src="../static/js/tailwind.cdn.js"></script>
     <script src="../static/js/navbar.js" defer></script>
     <link rel="stylesheet" href="../static/css/mfak.min.css">
-    <link rel="stylesheet" href="../static/css/home.css"> -->
+    <link rel="stylesheet" href="../static/css/home.css"> 
+    <script src="../static/js/index.js" defer></script>
+    -->
 
 </head>
 <body class="bg-gray-200 dark:bg-black text-gray-800 dark:text-white">
@@ -66,7 +70,7 @@
             <div class="flex items-center gap-3 md:hidden">
                 <button id="theme-toggle-mobile"
                     class="p-2 rounded-full bg-white dark:bg-gray-800 shadow-md transition hover:scale-105">
-                    <img id="theme-icon-mobile" src="../src/img/sun.webp" alt="Toggle Theme" class="w-6 h-6" />
+                    <img id="theme-icon-mobile" src="../static/img/sun.webp" alt="Toggle Theme" class="w-6 h-6" />
                 </button>
                 <button id="menu-toggle" class="text-current focus:outline-none transition-colors">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -90,10 +94,10 @@
         </div>
     </nav>
     <section class="w-full max-w-5xl mx-auto p-6 bg-white dark:bg-transparent rounded-xl shadow-md">
-        <h1 class="text-2xl font-semibold mb-6 text-zinc-900 dark:text-zinc-100">
+        <h1 class="text-2xl font-semibold mb-6 text-zinc-900 dark:text-zinc-100 text-center">
             Make a Receipt
         </h1>
-        <p class="max-w-5xl"><span class="text-red-900">**</span>If the Total is zero, the following item will automatically be excluded from the pdf</p>
+        <p class="max-w-5xl"><span class="text-red-900">**</span>If the Total is zero, the following item will automatically be excluded from the pdf, if some options do not apply, keep them blank</p>
         <p class="max-w-5xl"><span class="text-red-700">**</span>Our Services are free of charges, you DO NOT need any CASH to make a receipt.</p>
         <form method="POST" class="space-y-8">
             <div class="owner_information">
@@ -235,9 +239,9 @@
                         class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
             </div>
-            <button type="button" onclick="addanother_service()" class="addanother_service px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
-                                                                           text-zinc-700 dark:text-zinc-200
-                                                                           hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+            <button type="button" class="addanother_rent px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                                            text-zinc-700 dark:text-zinc-200
+                                            hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
                 + Add Another Rented Item
             </button>
             <div class="utility_charges">
@@ -371,17 +375,17 @@
             </div>
 
             <div class="relative">
-                <button type="button" onclick="addanother_unitutility()"
+                <button type="button"
                     class="addanother_utility px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
-                                                                                       text-zinc-700 dark:text-zinc-200
-                                                                                       hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+                            text-zinc-700 dark:text-zinc-200
+                            hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
                     + Add Another Unit based Utility
                 </button>
 
-                <button type="button" onclick="addanother_fixedutility()"
-                    class="addanother_utility px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
-                                                                                                       text-zinc-700 dark:text-zinc-200
-                                                                                                       hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+                <button type="button"
+                    class="addanother_fixedutility px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                            text-zinc-700 dark:text-zinc-200
+                            hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
                     + Add Another Fixed rate Utility
                 </button>
             </div>
@@ -401,7 +405,7 @@
                 </div>
             
                 <div class="grid grid-cols-2 gap-2 mt-2">
-                    <input type="text" id="additional_1" name="additional_1" placeholder="e.g. Lift Maintenance, WatchMan Fees, etc."
+                    <input type="text" id="additional_1" name="additional_1" placeholder="e.g. Lift Maintenance, WatchMan Fees, etc." autocomplete="off"
                         class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
                     <input type="number" id="additional_total_1" name="additional_total_1" value="0"
@@ -409,9 +413,9 @@
                 </div>
             </div>
 
-            <button type="button" onclick="addanother_service()" class="addanother_service px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
-                                                               text-zinc-700 dark:text-zinc-200
-                                                               hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+            <button type="button" class="addanother_service px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
+                                            text-zinc-700 dark:text-zinc-200
+                                            hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
                     + Add Another Services/Charges
             </button>
 
@@ -420,21 +424,29 @@
                     Misc
                 </h2>
             
-                <div class="grid grid-cols-4 gap-2">
+                <div class="grid grid-cols-5 gap-2">
                     <input readonly placeholder="Total Amount" class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700
                                              bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium
                                              text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+                    <input placeholder="Deduction Amount (if any)" readonly
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
+                    <input placeholder="Payable" readonly
+                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
                     <input readonly placeholder="Paid Amount"
                         class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
                     <input readonly placeholder="Due Amount"
                         class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
-                    <input placeholder="Deduction Amount (if any)" readonly
-                        class="px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-700 text-center text-sm font-medium text-zinc-600 dark:text-zinc-300 cursor-not-allowed" />
                 </div>
             
-                <div class="grid grid-cols-4 gap-2 mt-2">
+                <div class="grid grid-cols-5 gap-2 mt-2">
                     <input type="text" id="all_today" name="all_today" readonly 
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:none focus:none" />
+                    
+                    <input type="number" id="deduction_today" name="deduction_today" value="0"
                         class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    
+                    <input type="number" id="payable_today" name="payable_today" readonly value="0"
+                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:none focus:none" />
             
                     <input type="number" id="paid_today" name="paid_today" value="0"
                         class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
@@ -442,8 +454,6 @@
                     <input type="number" id="due_today" name="due_today" value="0"
                         class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     
-                    <input type="number" id="deduction_today" name="deduction_today" value="0"
-                        class="w-full px-2 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent text-center text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
 
                 <div class="flex items-center gap-2 py-4">
@@ -557,138 +567,5 @@
             &copy; 2026 ভাড়া দেন. All rights reserved.
         </div>
     </footer>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const form = document.querySelector("form");
-
-        function clearZero(e) {
-            if (e.target.type === "number" && e.target.value === "0") {
-                e.target.value = "";
-            }
-        }
-
-        function restoreZero(e) {
-            if (e.target.type === "number" && e.target.value === "") {
-                e.target.value = "0";
-            }
-        }
-
-        form.addEventListener("focusin", clearZero);
-        form.addEventListener("focusout", restoreZero);
-
-        form.addEventListener("input", (e) => {
-            if (e.target.id.startsWith("rent_total_")) {
-                // direct value, no calc needed (future-proof hook)
-            }
-        });
-
-        form.addEventListener("input", (e) => {
-            if (
-                e.target.id.startsWith("utility_unit_") ||
-                e.target.id.startsWith("utility_price_")
-            ) {
-                const index = e.target.id.match(/\d+$/)[0];
-
-                const unit = parseFloat(
-                    document.getElementById(`utility_unit_${index}`)?.value
-                ) || 0;
-
-                const price = parseFloat(
-                    document.getElementById(`utility_price_${index}`)?.value
-                ) || 0;
-
-                const totalInput = document.getElementById(`utility_total_${index}`);
-                if (totalInput) {
-                    totalInput.value = (unit * price).toFixed(2);
-                }
-            }
-
-            if (
-                e.target.id.startsWith("fixedutility_ns_") ||
-                e.target.id.startsWith("fixedutility_price_")
-            ) {
-                const index = e.target.id.match(/\d+$/)[0];
-
-                const unit = parseFloat(
-                    document.getElementById(`fixedutility_ns_${index}`)?.value
-                ) || 0;
-
-                const price = parseFloat(
-                    document.getElementById(`fixedutility_price_${index}`)?.value
-                ) || 0;
-
-                const totalInput = document.getElementById(`fixedutility_total_${index}`);
-                if (totalInput) {
-                    totalInput.value = (unit * price).toFixed(2);
-                }
-            }
-        });
-
-    });
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const form = document.querySelector("form");
-        const STORAGE_KEY = "receipt_draft";
-
-        function saveForm() {
-            const data = {};
-            form.querySelectorAll("input, select, textarea").forEach(el => {
-                if (el.name) {
-                    data[el.name] = el.value;
-                }
-            });
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        }
-
-        function restoreForm() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (!saved) return;
-
-            const data = JSON.parse(saved);
-            Object.keys(data).forEach(name => {
-                const field = form.querySelector(`[name="${name}"]`);
-                if (field) {
-                    field.value = data[name];
-                    field.dispatchEvent(new Event("input", { bubbles: true }));
-                }
-            });
-        }
-
-        form.addEventListener("submit", () => {
-            localStorage.removeItem(STORAGE_KEY);
-        });
-
-        form.addEventListener("input", saveForm);
-        form.addEventListener("change", saveForm);
-
-        restoreForm();
-    });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const fromInput = document.getElementById("period_from");
-        const toInput = document.getElementById("period_to");
-
-        if (fromInput && toInput && !fromInput.value && !toInput.value) {
-            const now = new Date();
-
-            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-            fromInput.value = formatDateLocal(firstDay);
-            toInput.value = formatDateLocal(lastDay);
-        }
-    });
-
-    function formatDateLocal(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-    }
-</script>
 </body>
 </html>

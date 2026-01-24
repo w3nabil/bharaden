@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template, request, send_from_directory, current_app
+from flask import Blueprint, render_template, request, send_from_directory, current_app, abort
 import pprint 
 from models import fnum, text_purify
+import markdown
+import os
 
 views = Blueprint("views", __name__)
 
@@ -155,3 +157,21 @@ def slap_favicon_png():
         "favicon.png",
         mimetype="image/png",
     )
+
+@views.route("/changelog", methods=["GET"])
+def changelog():
+    return render_template("changelog.html")
+
+
+@views.route("/docs/<name>")
+def docs(name):
+    path = os.path.join("docs", f"{name}.md")
+    if not os.path.isfile(path):
+        abort(404)
+
+    with open(path, "r", encoding="utf-8") as f:
+        content = markdown.markdown(
+            f.read(), extensions=["fenced_code", "tables", "codehilite"]
+        )
+
+    return render_template("docs.html", content=content, title=name, version="1.0.0")
