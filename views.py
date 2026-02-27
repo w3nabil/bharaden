@@ -3,6 +3,8 @@ import pprint
 from models import fnum, text_purify
 import markdown
 import os
+from datetime import datetime
+import random
 
 views = Blueprint("views", __name__)
 
@@ -106,6 +108,23 @@ def home():
         if name and total > 0:
             additionals.append({"name": name, "total": total})
 
+    timegenerated = datetime.now().strftime("%d %B, %Y %I:%M %p")
+    print(timegenerated)
+    period_form = datetime.strptime(data.get("period_from"), "%Y-%m-%d").strftime('%d %B, %Y')
+    period_to = datetime.strptime(data.get("period_to"), "%Y-%m-%d").strftime("%d %B, %Y")
+    billing_month = period_form.split(" ")[1][:-1]
+    billing_year = period_form.split(" ")[2]
+
+    verses_bangla = [
+        "পড়ুন আপনার প্রতিপালক এর নামে, যিনি আপনাকে সৃষ্টি করেছেন।",
+        "হে প্রতিপালক, আমায় জ্ঞান দিন।",
+        "অতএব, অবশ্যই কষ্টের সাথে স্বস্তি আসে। অবশ্যই সেই কষ্টের সাথে আরও স্বস্তি আসে।",
+        "আল্লাহর পথে যত ক্ষতিই হোক না কেন, তারা কখনও দমে যায়নি, দুর্বল হয়নি বা হার মানেনি! আল্লাহ ধৈর্যশীলদের ভালোবাসেন।",
+        "হে ঈমানদারগণ! ধৈর্য ও নামাজের মাধ্যমে সান্ত্বনা কামনা করো। নিশ্চয়ই আল্লাহ ধৈর্যশীলদের সাথে আছেন।",
+    ]
+    
+    bottom_verse = random.choice(verses_bangla)
+
     if DEBUG:
         print("[DEBUG] Parsed dynamic sections:")
         print("Rents:")
@@ -132,13 +151,17 @@ def home():
         fixed_utilities=fixed_utilities,
         additionals=additionals,
         currency=data.get("currency", ""),
-        period_from=data.get("period_from", ""),
-        period_to=data.get("period_to", ""),
+        period_from=period_form,
+        period_to=period_to,
         paid_today=data.get("paid_today", 0),
         all_today=data.get("all_today", 0),
         due_today=data.get("due_today", 0),
         deduction_today=data.get("deduction_today", 0),
         deduction_reason=data.get("deduction_reason", ""),
+        timegenerated=timegenerated,
+        billing_year=billing_year,
+        billing_month=billing_month,
+        bottom_verse=bottom_verse,
     )
 
 @views.route("/favicon.ico")

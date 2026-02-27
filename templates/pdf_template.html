@@ -9,16 +9,23 @@
             font-family: sans-serif;
             font-size: 14px;
             color: #111;
+            max-width: 1000px;
+            margin: auto;
         }
 
-        h2 {
-            margin-top: 1rem;
+        h2, h4 {
+            font-size: 12px;
+            margin: 0.2rem 0 0.2rem 0;
         }
 
+        p {
+            font-size: 10px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 1rem;
+            border-radius: 2rem;
         }
 
         th,
@@ -26,147 +33,323 @@
             border: 1px solid #333;
             padding: 4px;
             text-align: center;
+            font-size: 10px;
         }
     </style>
 </head>
 
 <body>
-    <h3 style="text-align: center;">Billing Statement</h3>
-    <hr>
-    <p>
-        To whom it may concern,<br><br>
-        This statement records the monthly charges for {{tenant_name}}, residing at {{tenant_address}}
-        (Email: {{tenant_email}}
-        | Phone: {{tenant_phone}}), payable to {{owner_name}}
-        for the billing period {{period_from}} – {{period_to}}, in accordance with the rental arrangement.
-    </p>
-    <div class="rent-unituti" style="display: flex; gap: 2rem; width: 100%;">
-        {% if rents%}
-        <div class="rent-div" style="width: 100%;">
-            <h4>Rents</h4>
-            <table>
+    <div class="mainsection" style="display: flex;">
+        <div class="subsection-1" style="padding: 0 1rem 0 1rem; border-right: 1px dotted black;">
+            <h3 style="text-align: center;">ভাড়ার রশিদ</h3>
+            <hr>
+            <div class="information" style="display: flex; gap: 2rem; width: 100%; margin: auto;">
+                <p style="width: 50%;">
+                    ভাড়াটিয়া, <br>
+                    {{tenant_name}} <br>
+                    {{tenant_address}} <br>
+                    {% if tenant_email%}
+                    {{tenant_email}} <br>
+                    {% endif%}
+                    {% if tenant_phone%}
+                    {{tenant_phone}}
+                    {% endif%}
+                </p>
+                <p style="width: 50%;">
+                    মালিক,<br>
+                    {{owner_name}} <br>
+                    {{owner_address}} <br>
+                    {% if owner_email%}
+                    {{owner_email}} <br>
+                    {% endif%}
+                    {% if owner_phone%}
+                    {{owner_phone}}
+                    {% endif%}
+                </p>
+            </div>
+            <p>{{period_from}} হতে {{period_to}} পর্যন্ত অর্থাৎ উল্লেখ্য ভাড়াটিয়া ({{tenant_name}}) এর জন্য পরিশোধযোগ্য, বাসা ভাড়া
+                এবং বাসা
+                ভাড়া এর সাথে সংশ্লিষ্ট বিভিন্ন ধরনের খরচ ({{billing_year}} সালের {{billing_month}} মাসের) নিম্নে প্রদান করা হলো।
+            </p>
+            <div class="rent-unituti" style="display: flex; flex-direction: column;  gap: 0.3rem; width: 100%;">
+                {% if rents%}
+                <div class="rent-div" style="width: 100%;">
+                    <h4>বাড়ি ভাড়া</h4>
+                    <table>
+                        <tr>
+                            <th>তলা/ফ্ল্যাট নাম্বার</th>
+                            <th>মোট</th>
+                        </tr>
+                        {% for r in rents %}
+                        <tr>
+                            <td>{{ r.name }}</td>
+                            <td>{{ r.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% endif %}
+            
+                {% if utilities%}
+                <div class="unitutil-div" style="width: 100%;">
+                    <h4>ইউনিট ব্যবহার করে এরুপ বিল সমূহ</h4>
+                    <table>
+                        <tr>
+                            <th>বিলের ধরন/নাম</th>
+                            <th>মোট</th>
+                        </tr>
+                        {% for u in utilities %}
+                        <tr>
+                            <td>{{ u.name }}</td>
+                            <td>{{ u.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% endif %}
+            
+            </div>
+            
+            <div class="fixedutil-addi" style="display: flex; flex-direction: column; gap: 0.3rem; width: 100%;">
+                {% if fixed_utilities%}
+                <div class="fixedutil-div" style="width: 100%;">
+                    <h4>নির্ধারিত/একদর বিল সমূহ</h4>
+                    <table>
+                        <tr>
+                            <th>বিলের ধরন/নাম</th>
+                            <th>মোট</th>
+                        </tr>
+                        {% for f in fixed_utilities %}
+                        <tr>
+                            <td>{{ f.name }}</td>
+                            <td>{{ f.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% endif %}
+            
+                {% if additionals%}
+                <div class="addi-div" style="width: 100%;">
+            
+                    <h4>অন্যান্য সকল সেবাসমূহ</h4>
+                    <table>
+                        <tr>
+                            <th>সেবার ধরণ/নাম</th>
+                            <th>মোট</th>
+                        </tr>
+                        {% for a in additionals %}
+                        <tr>
+                            <td>{{ a.name }}</td>
+                            <td>{{ a.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+            
+            <h4>সার-সংক্ষেপ ({% if currency == "BDT" %}টাকায়{% else %}{{currency}}{% endif %})</h4>
+            <p>{{timegenerated}} অনুযায়ী</p>
+            <table style="width: 100%;">
+                <thead>
+                    <td>সর্বমোট</td>
+                    {% if deduction_today != "0" %}
+                    <td>কর্তন{% if deduction_reason %}<br>({{ deduction_reason }}){% endif %}</td>
+                    {% endif %}
+                    <td>পরিশোধিত অর্থ</td>
+                    <td>বকেয়া</td>
+                </thead>
                 <tr>
-                    <th>Item</th>
-                    <th>Total</th>
+                    <td>{{all_today}}</td>
+                    {% if deduction_today != "0" %}
+                    <td>{{deduction_today}}</td>
+                    {% endif %}
+                    <td>{{paid_today}}</td>
+                    <td>{{due_today}}</td>
                 </tr>
-                {% for r in rents %}
-                <tr>
-                    <td>{{ r.name }}</td>
-                    <td>{{ r.total }}</td>
-                </tr>
-                {% endfor %}
             </table>
+            
+            <style>
+                .sigowner-div table,
+                .sigtenant-div table {
+                    border-collapse: collapse;
+                    border: none;
+                }
+            
+                .sigowner-div th,
+                .sigowner-div td,
+                .sigtenant-div th,
+                .sigtenant-div td {
+                    border: none;
+                }
+            </style>
+            <div class="sig" style="display: flex;">
+                <div class="sigowner-div" style="width: 40%;">
+                    <br><br>
+                    <hr>
+                    <p style="text-align: center;">{{owner_name}}</p>
+                </div>
+                <div class="sigowner-div" style="width: 40%; padding-left: 60%;">
+                    <br><br>
+                    <hr>
+                    <p style="text-align: center;">{{tenant_name}}</p>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                <p style="font-style: italic; font-size: 10px; max-width: 50%; text-align: center;">
+                    "{{bottom_verse}}"
+                </p>
+            </div>
         </div>
-        {% endif %}
-        
-        {% if utilities%}
-        <div class="unitutil-div" style="width: 100%;">
-            <h4>Unit Based Utilities</h4>
-            <table>
+        <div class="subsection-2" style="padding: 0 1rem 0 1rem;">
+            <h3 style="text-align: center;">ভাড়ার রশিদ</h3>
+            <hr>
+            <div class="information" style="display: flex; gap: 2rem; width: 100%; margin: auto;">
+                <p style="width: 50%;">
+                    ভাড়াটিয়া, <br>
+                    {{tenant_name}} <br>
+                    {{tenant_address}} <br>
+                    {% if tenant_email%}
+                    {{tenant_email}} <br>
+                    {% endif%}
+                    {% if tenant_phone%}
+                    {{tenant_phone}}
+                    {% endif%}
+                </p>
+                <p style="width: 50%;">
+                    মালিক,<br>
+                    {{owner_name}} <br>
+                    {{owner_address}} <br>
+                    {% if owner_email%}
+                    {{owner_email}} <br>
+                    {% endif%}
+                    {% if owner_phone%}
+                    {{owner_phone}}
+                    {% endif%}
+                </p>
+            </div>
+            <p>{{period_from}} হতে {{period_to}} পর্যন্ত অর্থাৎ উল্লেখ্য ভাড়াটিয়া ({{tenant_name}}) এর জন্য পরিশোধযোগ্য, বাসা ভাড়া
+                এবং বাসা
+                ভাড়া এর সাথে সংশ্লিষ্ট বিভিন্ন ধরনের খরচ ({{billing_year}} সালের {{billing_month}} মাসের) নিম্নে প্রদান করা হলো।
+            </p>
+            <div class="rent-unituti" style="display: flex; flex-direction: column;  gap: 0.3rem; width: 100%;">
+                {% if rents%}
+                <div class="rent-div" style="width: 100%;">
+                    <h4>বাড়ি ভাড়া</h4>
+                    <table>
+                        <tr>
+                            <th>তলা/ফ্ল্যাট নাম্বার</th>
+                            <th>মোট</th>
+                        </tr>
+                        {% for r in rents %}
+                        <tr>
+                            <td>{{ r.name }}</td>
+                            <td>{{ r.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% endif %}
+            
+                {% if utilities%}
+                <div class="unitutil-div" style="width: 100%;">
+                    <h4>ইউনিট ব্যবহার করে এরুপ বিল সমূহ</h4>
+                    <table>
+                        <tr>
+                            <th>বিলের ধরন/নাম</th>
+                            <th>মোট</th>
+                        </tr>
+                        {% for u in utilities %}
+                        <tr>
+                            <td>{{ u.name }}</td>
+                            <td>{{ u.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% endif %}
+            
+            </div>
+            
+            <div class="fixedutil-addi" style="display: flex; flex-direction: column; gap: 0.3rem; width: 100%;">
+                {% if fixed_utilities%}
+                <div class="fixedutil-div" style="width: 100%;">
+                    <h4>নির্ধারিত/একদর বিল সমূহ</h4>
+                    <table>
+                        <tr>
+                            <th>বিলের ধরন/নাম</th>
+                            <th>মোট</th>
+                        </tr>
+                        {% for f in fixed_utilities %}
+                        <tr>
+                            <td>{{ f.name }}</td>
+                            <td>{{ f.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% endif %}
+            
+                {% if additionals%}
+                <div class="addi-div" style="width: 100%;">
+            
+                    <h4>অন্যান্য সকল সেবাসমূহ</h4>
+                    <table>
+                        <tr>
+                            <th>সেবার ধরণ/নাম</th>
+                            <th>মোট</th>
+                        </tr>
+                        {% for a in additionals %}
+                        <tr>
+                            <td>{{ a.name }}</td>
+                            <td>{{ a.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+            
+            <h4>সার-সংক্ষেপ ({% if currency == "BDT" %}টাকায়{% else %}{{currency}}{% endif %})</h4>
+            <p>{{timegenerated}} অনুযায়ী</p>
+            <table style="width: 100%;">
+                <thead>
+                    <td>সর্বমোট</td>
+                    {% if deduction_today != "0" %}
+                    <td>কর্তন{% if deduction_reason %}<br>({{ deduction_reason }}){% endif %}</td>
+                    {% endif %}
+                    <td>পরিশোধিত অর্থ</td>
+                    <td>বকেয়া</td>
+                </thead>
                 <tr>
-                    <th>Utility</th>
-                    <th>Total</th>
+                    <td>{{all_today}}</td>
+                    {% if deduction_today != "0" %}
+                    <td>{{deduction_today}}</td>
+                    {% endif %}
+                    <td>{{paid_today}}</td>
+                    <td>{{due_today}}</td>
                 </tr>
-                {% for u in utilities %}
-                <tr>
-                    <td>{{ u.name }}</td>
-                    <td>{{ u.total }}</td>
-                </tr>
-                {% endfor %}
             </table>
+            
+            <div class="sig" style="display: flex;">
+                <div class="sigowner-div" style="width: 40%;">
+                    <br><br>
+                    <hr>
+                    <p style="text-align: center;">{{owner_name}}</p>
+                </div>
+                <div class="sigowner-div" style="width: 40%; padding-left: 60%;">
+                    <br><br>
+                    <hr>
+                    <p style="text-align: center;">{{tenant_name}}</p>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                <p style="font-style: italic; font-size: 10px; max-width: 50%; text-align: center;">
+                    "{{bottom_verse}}"
+                </p>
+            </div>
         </div>
-        {% endif %}
-        
-    </div>
-
-    <div class="fixedutil-addi" style="display: flex; gap: 2rem; width: 100%;">
-        {% if fixed_utilities%}
-        <div class="fixedutil-div" style="width: 100%;">
-            <h4>Fixed Utilities</h4>
-            <table>
-                <tr>
-                    <th>Utility</th>
-                    <th>Total</th>
-                </tr>
-                {% for f in fixed_utilities %}
-                <tr>
-                    <td>{{ f.name }}</td>
-                    <td>{{ f.total }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        {% endif %}
-        
-        {% if additionals%}
-        <div class="addi-div" style="width: 100%;">
-        
-            <h4>Additional Services</h4>
-            <table>
-                <tr>
-                    <th>Service</th>
-                    <th>Total</th>
-                </tr>
-                {% for a in additionals %}
-                <tr>
-                    <td>{{ a.name }}</td>
-                    <td>{{ a.total }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        {% endif %}
-    </div>
-
-    <h4>Summary (in {{currency}})</h4>
-    <table style="width: 100%;">
-        <thead>
-            <td>Grand Total</td>
-            <td>Deduction <br> ({{ deduction_reason }})</td>
-            <td>Paid</td>
-            <td>Due</td>
-        </thead>
-        <tr>
-            <td>{{all_today}}</td>
-            <td>{{deduction_today}}</td>
-            <td>{{paid_today}}</td>
-            <td>{{due_today}}</td>
-        </tr>
-    </table>
-
-    <p> This statement confirms the charges and payment status for the stated period.
-    Issued for record and reference purposes.</p>
-
-    <style>
-        .sigowner-div table,
-        .sigtenant-div table {
-            border-collapse: collapse;
-            border: none;
-        }
-
-        .sigowner-div th,
-        .sigowner-div td,
-        .sigtenant-div th,
-        .sigtenant-div td {
-            border: none;
-        }
-
-    </style>
-    <div class="sigowner-div" style="width: 30%;">
-        <table>
-            <tr>
-                <td style="text-align: left;"><br><br><br>{{owner_name}}</td>
-            </tr>
-            <tr>
-                <td style="text-align: left;">{{owner_address}}</td>
-            </tr>
-            <tr>
-                <td style="text-align: left;">{{owner_phone}}</td>
-            </tr>
-            <tr>
-                <td style="text-align: left;">{{owner_email}}</td>
-            </tr>
-        </table>
     </div>
 </body>
 
